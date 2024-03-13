@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="create-contact-table" author="a.teodoro">
+        <createTable tableName="contact">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="phone_number" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-contact-history-table" author="a.teodoro">
+        <createTable tableName="contact_history">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="old_value" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="new_value" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="edited_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contact_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="contact_history"
+                                 baseColumnNames="contact_id"
+                                 referencedTableName="contact"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_contact_id"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+    <!-- Insert some test data -->
+    <changeSet id="insert-test-data" author="a.teodoro">
+        <sql>
+            INSERT INTO contact (first_name, last_name, email, phone_number) VALUES
+                ('John', 'Doe', 'john.doe@example.com', '1234567890');
+
+            INSERT INTO contact (first_name, last_name, email, phone_number) VALUES
+                ('Mark', 'Stones', 'mark.stones@example.com', '1234567890');
+
+            INSERT INTO contact (first_name, last_name, email, phone_number) VALUES
+                ('Luke', 'Skywalker', 'luke@starwars.com', '1234567890');
+
+            INSERT INTO contact_history (old_value, new_value, contact_id) VALUES
+                ('First Name: John, Last Name: Doeee, Email: john.doe@example.com, Phone Number: 1234567890',
+                 'First Name: John, Last Name: Doe, Email: john.doe@example.com, Phone Number: 1234567890', 1);
+
+            INSERT INTO contact_history (old_value, new_value, contact_id) VALUES
+                ('First Name: Mark, Last Name: Doe, Email: john.doe@example.com, Phone Number: 1234567890',
+                 'First Name: Luke, Last Name: Skywalker, Email: john.doe@example.com, Phone Number: 1234567890', 3);
+
+            INSERT INTO contact_history (old_value, new_value, contact_id) VALUES
+                ('First Name: Luke, Last Name: Skywalker, Email: john.doe@example.com, Phone Number: 1234567890',
+                 'First Name: Luke, Last Name: Skywalker, Email: luke@starwars.com, Phone Number: 1234567890', 3);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,14 @@
+.contact-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .contact-list li {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .contact-list li:last-child {
+    border-bottom: none;
+  }
+  

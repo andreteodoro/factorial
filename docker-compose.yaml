@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: "postgres:latest"
+    environment:
+      - POSTGRES_DB=factorial
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    
+  backend:
+    build:
+      context: .
+      dockerfile: factorial-code-challenge/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+  frontend:
+    build:
+      context: .
+      dockerfile: factorial-tool/Dockerfile
+    ports:
+      - "3000:80"

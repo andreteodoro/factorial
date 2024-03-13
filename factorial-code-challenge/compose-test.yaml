@@ -1,0 +1,9 @@
+services:
+  postgres-test:
+    image: "postgres:latest"
+    environment:
+      - POSTGRES_DB=factorial-test
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
